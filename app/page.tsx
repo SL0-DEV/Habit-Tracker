@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import HaptickCard from "./haptickcard";
 import { Plus, Flame, Calendar, TrendingUp, Moon, Sun } from "lucide-react";
+import { theme } from "./theme";
 
 export default function Home() {
   const [hapticks, setHapticks] = useState<Array<{ id: number; name: string; checked: boolean }>>([]);
@@ -14,7 +15,8 @@ export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // Initialize data from localStorage
+  const colors = darkMode ? theme.dark : theme.light;
+
   useEffect(() => {
     setMounted(true);
     
@@ -32,7 +34,6 @@ export default function Home() {
     if (storedHistory) {
       setWeeklyHistory(JSON.parse(storedHistory));
     } else {
-      // Initialize weekly history
       const history: { [key: string]: boolean } = {};
       for (let i = 6; i >= 0; i--) {
         const date = new Date();
@@ -50,7 +51,6 @@ export default function Home() {
     }
   }, []);
 
-  // Apply dark mode class to document
   useEffect(() => {
     if (!mounted) return;
     
@@ -61,7 +61,6 @@ export default function Home() {
     }
   }, [darkMode, mounted]);
 
-  // Check if all hapticks are completed
   useEffect(() => {
     if (hapticks.length === 0) return;
     
@@ -71,12 +70,10 @@ export default function Home() {
     if (allChecked && !weeklyHistory[today]) {
       setShowConfetti(true);
       
-      // Update streak
       const newStreak = streak + 1;
       setStreak(newStreak);
       localStorage.setItem("streak", newStreak.toString());
       
-      // Update history
       const newHistory = { ...weeklyHistory, [today]: true };
       setWeeklyHistory(newHistory);
       localStorage.setItem("history", JSON.stringify(newHistory));
@@ -134,42 +131,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-      <style>{`
-        @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        @keyframes pulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.05); }
-        }
-
-        @keyframes confetti {
-          0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-          100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-        }
-        
-        .pulse-animation {
-          animation: pulse 2s ease-in-out infinite;
-        }
-
-        .confetti {
-          position: fixed;
-          width: 10px;
-          height: 10px;
-          animation: confetti 3s linear forwards;
-          z-index: 9999;
-        }
-      `}</style>
-
+    <div style={{ backgroundColor: colors.background, minHeight: "100vh" }}>
       {/* Confetti Effect */}
       {showConfetti && (
         <>
@@ -192,39 +154,78 @@ export default function Home() {
         {/* Header */}
         <header className="mb-8">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-5xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-5xl font-bold" style={{ color: colors.textPrimary }}>
               Haptick Tracker
             </h1>
             <div className="flex items-center gap-4">
+              {/* Dark Mode Toggle */}
+              <button
+                onClick={toggleDarkMode}
+                className="p-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1"
+                style={{
+                  backgroundColor: colors.surface,
+                  borderWidth: "1px",
+                  borderStyle: "solid",
+                  borderColor: colors.border,
+                }}
+              >
+                {darkMode ? (
+                  <Sun className="w-6 h-6" style={{ color: colors.accent }} />
+                ) : (
+                  <Moon className="w-6 h-6" style={{ color: colors.primary }} />
+                )}
+              </button>
               
               {/* Streak Counter */}
-              <div className="flex items-center gap-3 bg-white dark:bg-gray-800 px-5 py-3 rounded-xl shadow-lg pulse-animation border border-gray-200 dark:border-gray-700">
-                <Flame className="w-6 h-6 text-orange-500" />
-                <span className="text-2xl font-bold text-orange-500">
+              <div
+                className="flex items-center gap-3 px-5 py-3 rounded-xl shadow-lg pulse-animation"
+                style={{
+                  backgroundColor: colors.surface,
+                  borderWidth: "1px",
+                  borderStyle: "solid",
+                  borderColor: colors.border,
+                }}
+              >
+                <Flame className="w-6 h-6" style={{ color: colors.accent }} />
+                <span className="text-2xl font-bold" style={{ color: colors.accent }}>
                   {streak}
                 </span>
-                <span className="text-sm text-gray-600 dark:text-gray-400">days</span>
+                <span className="text-sm" style={{ color: colors.textSecondary }}>days</span>
               </div>
             </div>
           </div>
 
           {/* Progress Bar */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+          <div
+            className="rounded-2xl p-6 shadow-lg"
+            style={{
+              backgroundColor: colors.surface,
+              borderWidth: "1px",
+              borderStyle: "solid",
+              borderColor: colors.border,
+            }}
+          >
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <span className="text-sm font-medium" style={{ color: colors.textSecondary }}>
                 Today's Progress
               </span>
-              <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+              <span className="text-2xl font-bold" style={{ color: colors.primary }}>
                 {completionPercentage}%
               </span>
             </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 overflow-hidden">
+            <div
+              className="w-full rounded-full h-4 overflow-hidden"
+              style={{ backgroundColor: darkMode ? colors.border : "#F3F4F6" }}
+            >
               <div
-                className="h-full bg-indigo-600 dark:bg-indigo-500 rounded-full transition-all duration-500 ease-out"
-                style={{ width: `${completionPercentage}%` }}
+                className="h-full rounded-full transition-all duration-500 ease-out"
+                style={{
+                  width: `${completionPercentage}%`,
+                  backgroundColor: colors.primary,
+                }}
               />
             </div>
-            <div className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+            <div className="mt-3 text-sm" style={{ color: colors.textSecondary }}>
               {completedCount} of {hapticks.length} habits completed
             </div>
           </div>
@@ -239,11 +240,24 @@ export default function Home() {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="What habit do you want to build today?"
-              className="flex-grow px-6 py-4 rounded-2xl border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition-all duration-200 shadow-md"
+              className="flex-grow px-6 py-4 rounded-2xl shadow-md focus:outline-none transition-all duration-200"
+              style={{
+                backgroundColor: colors.surface,
+                color: colors.textPrimary,
+                borderWidth: "2px",
+                borderStyle: "solid",
+                borderColor: colors.border,
+              }}
+              onFocus={(e) => e.target.style.borderColor = colors.borderHover}
+              onBlur={(e) => e.target.style.borderColor = colors.border}
             />
             <button
               onClick={addHaptick}
-              className="px-8 py-4 bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 text-white font-semibold rounded-2xl hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 flex items-center gap-2"
+              className="px-8 py-4 font-semibold rounded-2xl hover:shadow-xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-200 flex items-center gap-2"
+              style={{
+                backgroundColor: colors.primary,
+                color: "#FFFFFF",
+              }}
             >
               <Plus className="w-5 h-5" />
               Add
@@ -253,13 +267,13 @@ export default function Home() {
 
         {/* Hapticks List */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-            <TrendingUp className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+          <h2 className="text-2xl font-bold mb-4 flex items-center gap-2" style={{ color: colors.textPrimary }}>
+            <TrendingUp className="w-6 h-6" style={{ color: colors.primary }} />
             Today's Habits
           </h2>
           <div className="space-y-3">
             {hapticks.length === 0 ? (
-              <div className="text-center py-12 text-gray-400 dark:text-gray-600">
+              <div className="text-center py-12" style={{ color: colors.textMuted }}>
                 <Calendar className="w-16 h-16 mx-auto mb-4 opacity-50" />
                 <p className="text-lg">No habits yet. Add your first one above!</p>
               </div>
@@ -272,6 +286,7 @@ export default function Home() {
                   isChecked={haptick.checked}
                   onToggle={() => toggleHaptick(haptick.id)}
                   onRemove={() => removeHaptick(haptick.id)}
+                  colors={colors}
                 />
               ))
             )}
@@ -279,9 +294,17 @@ export default function Home() {
         </div>
 
         {/* Weekly History */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-            <Calendar className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+        <div
+          className="rounded-2xl p-6 shadow-lg"
+          style={{
+            backgroundColor: colors.surface,
+            borderWidth: "1px",
+            borderStyle: "solid",
+            borderColor: colors.border,
+          }}
+        >
+          <h2 className="text-2xl font-bold mb-4 flex items-center gap-2" style={{ color: colors.textPrimary }}>
+            <Calendar className="w-6 h-6" style={{ color: colors.primary }} />
             Weekly History
           </h2>
           <div className="grid grid-cols-7 gap-3">
@@ -293,11 +316,11 @@ export default function Home() {
               return (
                 <div
                   key={dateStr}
-                  className={`text-center p-4 rounded-xl transition-all duration-300 transform hover:scale-105 ${
-                    completed
-                      ? "bg-green-500 dark:bg-green-600 text-white shadow-lg"
-                      : "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500"
-                  }`}
+                  className="text-center p-4 rounded-xl transition-all duration-300 transform hover:scale-105"
+                  style={{
+                    backgroundColor: completed ? colors.secondary : (darkMode ? "#2D2D2D" : "#F9F9F9"),
+                    color: completed ? "#FFFFFF" : colors.textMuted,
+                  }}
                 >
                   <div className="text-xs font-medium mb-1">{dayName}</div>
                   <div className="text-2xl font-bold">{dayNum}</div>

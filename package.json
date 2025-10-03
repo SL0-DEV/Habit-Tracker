@@ -1,6 +1,6 @@
 {
-  "name": "haptick-tracker",
-  "homepage": "https://SL0-DEV.github.io/haptick-tracker",
+  "name": "habitflow",
+  "homepage": "https://SL0-DEV.github.io/habitflow",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -22,6 +22,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.21",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
