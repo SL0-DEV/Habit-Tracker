@@ -196,17 +196,6 @@ export default function Home() {
               Haptick Tracker
             </h1>
             <div className="flex items-center gap-4">
-              {/* Dark Mode Toggle */}
-              <button
-                onClick={toggleDarkMode}
-                className="p-3 rounded-xl bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700"
-              >
-                {darkMode ? (
-                  <Sun className="w-6 h-6 text-yellow-500" />
-                ) : (
-                  <Moon className="w-6 h-6 text-indigo-600" />
-                )}
-              </button>
               
               {/* Streak Counter */}
               <div className="flex items-center gap-3 bg-white dark:bg-gray-800 px-5 py-3 rounded-xl shadow-lg pulse-animation border border-gray-200 dark:border-gray-700">
