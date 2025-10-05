@@ -155,7 +155,7 @@ export default function Home() {
         <header className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-5xl font-bold" style={{ color: colors.textPrimary }}>
-              Hapit
+              Habit
             </h1>
             <div className="flex items-center gap-4">
               {/* Dark Mode Toggle */}
